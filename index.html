@@ -129,7 +129,7 @@ body {
 
 <script>
 /* ═══════ CONFIG ═══════ */
-const WIN_SCORE = 5;
+const WIN_SCORE = 3;
 const PW_RATIO = 0.12, PH_RATIO = 0.16;   // paddle w/h as fraction of screen
 const BALL_R = 14;
 const BASE_SPEED = 5;
@@ -289,14 +289,14 @@ function tick(t=0) {
     emit(0, ball.y, COL.p2, 14);
     if (checkWin()) return;
     gameActive = false;
-    setTimeout(()=>{ resetBall(); }, 700);
+    setTimeout(()=>{ resetBall(); tick(performance.now()); }, 700);
   }
   if (ball.x-br > W) {
     scores[0]++; updateUI();
     emit(W, ball.y, COL.p1, 14);
     if (checkWin()) return;
     gameActive = false;
-    setTimeout(()=>{ resetBall(); }, 700);
+    setTimeout(()=>{ resetBall(); tick(performance.now()); }, 700);
   }
 
   // particles
