@@ -145,6 +145,7 @@ let particles = [];
 let gameActive = false;
 let cvs, ctx, W=0, H=0;
 let touchBase = { left:0, right:0 };
+let touchActive = { left:false, right:false }; // whether a finger is currently touching this side
 let lastFrame = 0;
 
 const COL = { ball:'#fff', p1:'#00e5ff', p2:'#ff4081', line:'rgba(255,255,255,.07)' };
@@ -157,14 +158,11 @@ function startGame() {
   ctx = cvs.getContext('2d');
   onResize();
 
-  const tl = document.getElementById('touch-left');
-  const tr = document.getElementById('touch-right');
-
-  tl.addEventListener('touchstart', e => { e.preventDefault(); touchBase.left = e.touches[0].clientY; },{passive:false});
-  tl.addEventListener('touchmove',  e => { e.preventDefault(); onMove('left', e.touches[0].clientY); },{passive:false});
-
-  tr.addEventListener('touchstart', e => { e.preventDefault(); touchBase.right = e.touches[0].clientY; },{passive:false});
-  tr.addEventListener('touchmove',  e => { e.preventDefault(); onMove('right', e.touches[0].clientY); },{passive:false});
+  // Unified touch handler: routes each finger by which half of screen it's in
+  document.addEventListener('touchstart', onTouchStart, {passive:false});
+  document.addEventListener('touchmove', onTouchMove, {passive:false});
+  document.addEventListener('touchend', onTouchEnd, {passive:false});
+  document.addEventListener('touchcancel', onTouchEnd, {passive:false});
 
   scores = [0,0]; updateUI(); startCD(3);
 }
@@ -206,6 +204,43 @@ function onMove(side, clientY) {
   touchBase[side] = clientY;
   const dyNorm = dy / H * 1.2;
   paddleY[side] = Math.max(0.14, Math.min(0.86, paddleY[side] + dyNorm));
+}
+
+/* ═══════ TOUCH HANDLING (multi-touch) ═══════ */
+function onTouchStart(e) {
+  e.preventDefault();
+  const half = W / 2;
+  for (let i = 0; i < e.touches.length; i++) {
+    const t = e.touches[i];
+    const side = t.clientX < half ? 'left' : 'right';
+    touchBase[side] = t.clientY;
+    touchActive[side] = true;
+  }
+}
+
+function onTouchMove(e) {
+  e.preventDefault();
+  const half = W / 2;
+  for (let i = 0; i < e.touches.length; i++) {
+    const t = e.touches[i];
+    const side = t.clientX < half ? 'left' : 'right';
+    const dy = t.clientY - touchBase[side];
+    touchBase[side] = t.clientY;
+    const dyNorm = dy / H * 1.2;
+    paddleY[side] = Math.max(0.14, Math.min(0.86, paddleY[side] + dyNorm));
+  }
+}
+
+function onTouchEnd(e) {
+  // Re-check: if no touches remain on a side, deactivate it
+  const half = W / 2;
+  let hasLeft = false, hasRight = false;
+  for (let i = 0; i < e.touches.length; i++) {
+    const t = e.touches[i];
+    if (t.clientX < half) hasLeft = true; else hasRight = true;
+  }
+  touchActive.left = hasLeft;
+  touchActive.right = hasRight;
 }
 
 /* ═══════ GAME LOOP ═══════ */
