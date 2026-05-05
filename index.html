@@ -285,14 +285,14 @@ function tick(t) { if (t === undefined) t = performance.now();
   }
 
   // score
-  if (ball.x+br < 0) {
+  if (ball.x < 0) {
     scores[1]++; points[1]++; updateUI();
     emit(0, ball.y, COL.p2, 14);
     if (checkWin()) return;
     gameActive = false;
     setTimeout(()=>{ resetBall(); startCD(3); }, 700);
   }
-  if (ball.x-br > W) {
+  if (ball.x > W) {
     scores[0]++; points[0]++; updateUI();
     emit(W, ball.y, COL.p1, 14);
     if (checkWin()) return;
