@@ -97,7 +97,8 @@ body {
 }
 #go-ov h2 { font-size:clamp(24px,7vw,34px); font-weight:800; }
 #go-ov .fscore { font-size:clamp(40px,12vw,56px); font-weight:900; }
-#go-ov .btn { width:clamp(200px,70vw,260px); margin-top:6px; }
+#go-ov .btn { width:clamp(200px,70vw,260px); margin-top:6px; pointer-events:auto; }
+#go-ov button { pointer-events:auto; }
 </style>
 </head>
 <body>
@@ -123,7 +124,7 @@ body {
   <div id="go-ov">
     <h2 id="go-t"></h2>
     <div class="fscore" id="go-s"></div>
-    <button class="btn" onclick="restartGame()">Play Again</button>
+    <button class="btn" id="btn-play-again" onclick="restartGame()">Play Again</button>
 
   </div>
 </div>
@@ -166,7 +167,13 @@ function startGame() {
   document.addEventListener('touchend', onTouchEnd, {passive:false});
   document.addEventListener('touchcancel', onTouchEnd, {passive:false});
 
-  scores = [0,0]; updateUI(); startCD(3);
+  scores = [0,0]; updateUI();
+
+  // Explicit click binding as fallback for restart button
+  const btn = document.getElementById('btn-play-again');
+  if (btn) { btn.addEventListener('click', restartGame); }
+
+  startCD(3);
 }
 
 function onResize() {
@@ -428,6 +435,7 @@ function showGO(s,w) {
 }
 
 function restartGame() {
+  console.log('[restartGame] called!');
   document.getElementById('go-ov').style.display = 'none';
   scores = [0,0]; points = [0,0]; updateUI();
   paddleY = {left:0.5, right:0.5};
@@ -436,6 +444,7 @@ function restartGame() {
   ball.vx = 0; ball.vy = 0;
   particles = [];
   resetBall(); startCD(3);
+  console.log('[restartGame] game started');
 }
 
 
