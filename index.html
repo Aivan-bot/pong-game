@@ -431,6 +431,10 @@ function restartGame() {
   document.getElementById('go-ov').style.display = 'none';
   scores = [0,0]; points = [0,0]; updateUI();
   paddleY = {left:0.5, right:0.5};
+  lastFrame = performance.now();
+  ball.speed = BASE_SPEED;
+  ball.vx = 0; ball.vy = 0;
+  particles = [];
   resetBall(); startCD(3);
 }
 
