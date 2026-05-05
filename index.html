@@ -288,14 +288,14 @@ function tick(t) { if (t === undefined) t = performance.now();
     emit(0, ball.y, COL.p2, 14);
     if (checkWin()) return;
     gameActive = false;
-    setTimeout(()=>{ resetBall(); tick(performance.now()); }, 700);
+    setTimeout(()=>{ resetBall(); startCD(3); }, 700);
   }
   if (ball.x-br > W) {
     scores[0]++; updateUI();
     emit(W, ball.y, COL.p1, 14);
     if (checkWin()) return;
     gameActive = false;
-    setTimeout(()=>{ resetBall(); tick(performance.now()); }, 700);
+    setTimeout(()=>{ resetBall(); startCD(3); }, 700);
   }
 
   // particles
