@@ -124,7 +124,7 @@ body {
     <h2 id="go-t"></h2>
     <div class="fscore" id="go-s"></div>
     <button class="btn" onclick="restartGame()">Play Again</button>
-    <button class="btn sec" onclick="backToLobby()">Back to Lobby</button>
+
   </div>
 </div>
 
@@ -434,14 +434,7 @@ function restartGame() {
   resetBall(); startCD(3);
 }
 
-function backToLobby() {
-  document.getElementById('go-ov').style.display = 'none';
-  document.getElementById('game-wrap').style.display = 'none';
-  document.getElementById('lobby').style.display = 'flex';
-  scores = [0,0]; points = [0,0]; paddleY = {left:0.5,right:0.5};
-  particles = []; gameActive = false;
-  ball = {x:0,y:0,vx:0,vy:0,speed:BASE_SPEED};
-}
+
 </script>
 </body>
 </html>
