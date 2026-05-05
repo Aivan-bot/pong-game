@@ -65,6 +65,7 @@ body {
 }
 .sc { text-align:center; }
 .sc .val { font-size:clamp(32px,9vw,48px); font-weight:900; line-height:1; }
+.sc .pts { font-size:clamp(10px,2.5vw,13px); color:#546e7a; opacity:.4; margin-top:2px; display:block; }
 .sc .lbl { font-size:clamp(8px,2vw,10px); letter-spacing:2px; text-transform:uppercase; color:#546e7a; display:block; margin-bottom:1px; }
 .sl .val { color:#00e5ff; } .sr .val { color:#ff4081; }
 .sv { font-size:clamp(20px,6vw,28px); color:#546e7a; opacity:.35; align-self:flex-end; padding-bottom:4px; }
@@ -110,9 +111,9 @@ body {
 
 <div id="game-wrap">
   <div id="score-bar">
-    <div class="sc sl"><span class="lbl">Player 1</span><span class="val" id="sc1">0</span></div>
+    <div class="sc sl"><span class="lbl">Player 1</span><span class="val" id="sc1">0</span><span class="pts" id="pts1">0 pts</span></div>
     <div class="sv">:</div>
-    <div class="sc sr"><span class="lbl">Player 2</span><span class="val" id="sc2">0</span></div>
+    <div class="sc sr"><span class="lbl">Player 2</span><span class="val" id="sc2">0</span><span class="pts" id="pts2">0 pts</span></div>
   </div>
   <div id="player-tag"></div>
   <canvas id="cvs"></canvas>
@@ -139,6 +140,7 @@ const MARGIN = 24;
 
 /* ═══════ STATE ═══════ */
 let scores = [0,0];
+let points = [0,0];
 let paddleY = { left:0.5, right:0.5 };
 let ball = { x:0, y:0, vx:0, vy:0, speed:BASE_SPEED };
 let particles = [];
@@ -284,14 +286,14 @@ function tick(t) { if (t === undefined) t = performance.now();
 
   // score
   if (ball.x+br < 0) {
-    scores[1]++; updateUI();
+    scores[1]++; points[1]++; updateUI();
     emit(0, ball.y, COL.p2, 14);
     if (checkWin()) return;
     gameActive = false;
     setTimeout(()=>{ resetBall(); startCD(3); }, 700);
   }
   if (ball.x-br > W) {
-    scores[0]++; updateUI();
+    scores[0]++; points[0]++; updateUI();
     emit(W, ball.y, COL.p1, 14);
     if (checkWin()) return;
     gameActive = false;
@@ -404,6 +406,8 @@ function emit(x,y,color,n=6) {
 function updateUI() {
   document.getElementById('sc1').textContent = scores[0];
   document.getElementById('sc2').textContent = scores[1];
+  document.getElementById('pts1').textContent = points[0] + ' pts';
+  document.getElementById('pts2').textContent = points[1] + ' pts';
 }
 
 function checkWin() {
@@ -425,7 +429,7 @@ function showGO(s,w) {
 
 function restartGame() {
   document.getElementById('go-ov').style.display = 'none';
-  scores = [0,0]; updateUI();
+  scores = [0,0]; points = [0,0]; updateUI();
   paddleY = {left:0.5, right:0.5};
   resetBall(); startCD(3);
 }
@@ -434,7 +438,7 @@ function backToLobby() {
   document.getElementById('go-ov').style.display = 'none';
   document.getElementById('game-wrap').style.display = 'none';
   document.getElementById('lobby').style.display = 'flex';
-  scores = [0,0]; paddleY = {left:0.5,right:0.5};
+  scores = [0,0]; points = [0,0]; paddleY = {left:0.5,right:0.5};
   particles = []; gameActive = false;
   ball = {x:0,y:0,vx:0,vy:0,speed:BASE_SPEED};
 }
