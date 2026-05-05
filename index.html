@@ -178,7 +178,7 @@ function startCD(n) {
     document.getElementById('cd-ov').style.display = 'none';
     gameActive = true;
     resetBall();
-    tick();
+    tick(performance.now());
     return;
   }
   document.getElementById('cd-ov').style.display = 'flex';
@@ -196,7 +196,6 @@ function resetBall() {
   const ang = (Math.random()-0.5)*0.5;
   ball.vx = Math.cos(ang)*BASE_SPEED*dir;
   ball.vy = Math.sin(ang)*BASE_SPEED;
-  gameActive = true;
 }
 
 function onMove(side, clientY) {
@@ -244,7 +243,7 @@ function onTouchEnd(e) {
 }
 
 /* ═══════ GAME LOOP ═══════ */
-function tick(t=0) {
+function tick(t) { if (t === undefined) t = performance.now();
   if (!gameActive) return;
   const dt = Math.min((t-lastFrame)/16.667, 2.5);
   lastFrame = t;
@@ -427,6 +426,7 @@ function showGO(s,w) {
 function restartGame() {
   document.getElementById('go-ov').style.display = 'none';
   scores = [0,0]; updateUI();
+  paddleY = {left:0.5, right:0.5};
   resetBall(); startCD(3);
 }
 
