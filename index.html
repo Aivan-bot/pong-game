@@ -169,10 +169,6 @@ function startGame() {
 
   scores = [0,0]; updateUI();
 
-  // Explicit click binding as fallback for restart button
-  const btn = document.getElementById('btn-play-again');
-  if (btn) { btn.addEventListener('click', restartGame); }
-
   startCD(3);
 }
 
@@ -187,6 +183,9 @@ function startCD(n) {
     document.getElementById('cd-ov').style.display = 'none';
     gameActive = true;
     resetBall();
+    // Show touch layers for gameplay
+    document.getElementById('touch-left').style.display='block';
+    document.getElementById('touch-right').style.display='block';
     tick(performance.now());
     return;
   }
@@ -216,6 +215,11 @@ function onMove(side, clientY) {
 
 /* ═══════ TOUCH HANDLING (multi-touch) ═══════ */
 function onTouchStart(e) {
+  // Allow clicks through on the Play Again button (preventDefault would block the click event)
+  const btn = document.getElementById('btn-play-again');
+  if (btn && (e.target === btn || btn.contains(e.target))) {
+    return;
+  }
   e.preventDefault();
   const half = W / 2;
   for (let i = 0; i < e.touches.length; i++) {
@@ -240,6 +244,10 @@ function onTouchMove(e) {
 }
 
 function onTouchEnd(e) {
+  const btn = document.getElementById('btn-play-again');
+  if (btn && (e.target === btn || btn.contains(e.target))) {
+    return;
+  }
   // Re-check: if no touches remain on a side, deactivate it
   const half = W / 2;
   let hasLeft = false, hasRight = false;
@@ -425,6 +433,9 @@ function checkWin() {
 
 function showGO(s,w) {
   gameActive = false;
+  // Hide touch layers so they don't block the game-over overlay
+  document.getElementById('touch-left').style.display='none';
+  document.getElementById('touch-right').style.display='none';
   const win = w===0?'Player 1 wins! 🎉':'Player 2 wins! 🎉';
   const col = w===0?'#00e5ff':'#ff4081';
   document.getElementById('go-t').textContent = win;
@@ -445,9 +456,6 @@ function restartGame() {
   particles = [];
   resetBall(); startCD(3);
   console.log('[restartGame] game started');
-}
-
-
-</script>
+}</script>
 </body>
 </html>
