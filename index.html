@@ -212,6 +212,11 @@ function onMove(side, clientY) {
 
 /* ═══════ TOUCH HANDLING (multi-touch) ═══════ */
 function onTouchStart(e) {
+  // Allow clicks through on the Play Again button (preventDefault would block the click event)
+  const btn = document.getElementById('btn-play-again');
+  if (btn && (e.target === btn || btn.contains(e.target))) {
+    return;
+  }
   e.preventDefault();
   const half = W / 2;
   for (let i = 0; i < e.touches.length; i++) {
