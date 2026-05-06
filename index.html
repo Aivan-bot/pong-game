@@ -241,6 +241,10 @@ function onTouchMove(e) {
 }
 
 function onTouchEnd(e) {
+  const btn = document.getElementById('btn-play-again');
+  if (btn && (e.target === btn || btn.contains(e.target))) {
+    return;
+  }
   // Re-check: if no touches remain on a side, deactivate it
   const half = W / 2;
   let hasLeft = false, hasRight = false;
