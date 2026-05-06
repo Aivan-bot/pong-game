@@ -169,10 +169,6 @@ function startGame() {
 
   scores = [0,0]; updateUI();
 
-  // Explicit click binding as fallback for restart button
-  const btn = document.getElementById('btn-play-again');
-  if (btn) { btn.addEventListener('click', restartGame); }
-
   startCD(3);
 }
 
