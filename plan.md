@@ -39,6 +39,33 @@ Remove these lines from `startGame()`:
 
 No other changes needed — the inline `onclick="restartGame()"` on the button is sufficient.
 
+---
+
+## Bug #2: onTouchStart blocks button clicks on touch devices
+
+### Problem
+The global `touchstart` listener calls `e.preventDefault()` on **all** touches. On mobile/touch devices, `preventDefault()` on a `touchstart` prevents the browser from generating a synthetic `click` event. Since the button relies on an inline `onclick` handler (which fires via `click` events), touches on the button are swallowed and nothing happens.
+
+### Fix
+Skip `preventDefault()` when the touch target is the Play Again button.
+
+### Changes
+
+**File: `index.html`**
+
+In `onTouchStart`, add an early return before `e.preventDefault()`:
+```javascript
+function onTouchStart(e) {
+  // Allow clicks through on the Play Again button
+  const btn = document.getElementById('btn-play-again');
+  if (btn && (e.target === btn || btn.contains(e.target))) {
+    return;
+  }
+  e.preventDefault();
+```
+
+No other changes needed.
+
 ## Verification
 1. Start a game → score points → game over overlay appears
 2. Click "Play Again" → button should fire exactly once
